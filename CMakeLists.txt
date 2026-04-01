@@ -1,23 +1,36 @@
 cmake_minimum_required(VERSION 3.15)
 
-set(CMAKE_CXX_COMPILER "clang++")
-set(CMAKE_C_COMPILER "clang")
+# FPChecker requires clang for LLVM pass support
+set(CMAKE_CXX_COMPILER "clang++-14")
+set(CMAKE_C_COMPILER "clang-14")
+
+# Add libstdc++ path for clang linking
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L/usr/lib/gcc/x86_64-linux-gnu/11")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -L/usr/lib/gcc/x86_64-linux-gnu/11")
 
 project(fpchecker VERSION 0.6 DESCRIPTION "FPChecker" LANGUAGES CXX C)
 
-execute_process(COMMAND llvm-config --ldflags 
-OUTPUT_VARIABLE CMAKE_SHARED_LINKER_FLAGS 
-OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Find llvm-config (try versioned first)
+find_program(LLVM_CONFIG NAMES llvm-config-14 llvm-config-15 llvm-config-16 llvm-config)
+if(NOT LLVM_CONFIG)
+  message(FATAL_ERROR "llvm-config not found. Install LLVM development packages.")
+endif()
+message(STATUS "Using LLVM config: ${LLVM_CONFIG}")
 
-execute_process(COMMAND llvm-config --cxxflags
+execute_process(COMMAND ${LLVM_CONFIG} --ldflags
+OUTPUT_VARIABLE LLVM_LDFLAGS
+OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(CMAKE_SHARED_LINKER_FLAGS "${LLVM_LDFLAGS} -L/usr/lib/gcc/x86_64-linux-gnu/11")
+
+execute_process(COMMAND ${LLVM_CONFIG} --cxxflags
 OUTPUT_VARIABLE CMAKE_CXX_FLAGS
 OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-execute_process(COMMAND llvm-config --cppflags
-OUTPUT_VARIABLE CMAKE_CPP_FLAGS 
+execute_process(COMMAND ${LLVM_CONFIG} --cppflags
+OUTPUT_VARIABLE CMAKE_CPP_FLAGS
 OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -g -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -g -std=c++17 -stdlib=libstdc++ -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
 
 include(GNUInstallDirs)
 include(CheckLanguage)
