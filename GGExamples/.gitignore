@@ -1,0 +1,13 @@
+# Compiled binaries
+error_analysis_demo
+newton_root
+
+# FPChecker logs
+.fpc_logs/
+
+# Generated plots
+*.png
+
+# Temporary files
+*.o
+*.out

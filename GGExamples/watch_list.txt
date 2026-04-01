@@ -1,0 +1,16 @@
+# FPChecker Watch List
+# Each line specifies a source line number to track error history.
+# These should be lines containing floating-point operations in newton_root.c
+#
+# Lines in asymptotic_f():
+59    # inv_x = 1.0f / x
+60    # atan_val = atanf(inv_x)
+61    # product = x * atan_val
+#
+# Lines in asymptotic_df():
+79    # term2 = x / denom
+80    # result = atan_val - term2
+#
+# Lines in newton_step():
+95    # ratio = fx / dfx
+96    # new_x = x - ratio
