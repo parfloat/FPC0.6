@@ -1,3 +1,14 @@
+# FPC0.6 - FPChecker v0.6 Fork
+
+**This is a fork of [LLNL/FPChecker](https://github.com/LLNL/FPChecker) branch v0.6 for the parfloat-class project.**
+
+- **Original Repository:** https://github.com/LLNL/FPChecker
+- **Branch:** v0.6
+- **Forked by:** parfloat
+- **Purpose:** Study and experimentation with floating-point error detection in HPC applications
+
+---
+
 <!--
 # FPChecker
 -->
